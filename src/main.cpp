@@ -1,21 +1,16 @@
 #include <Arduino.h>
+#include <Servo.h>
+
+Servo myServo;
 
 void setup() {
-  pinMode(13, OUTPUT);
-}
-
-void blink(int times) {
-  for(int i = 0; i < times; i++) {
-    digitalWrite(13, HIGH);
-    delay(200);
-    digitalWrite(13, LOW);
-    delay(200);
-  }
+  myServo.attach(12);
 }
 
 void loop() {
-  blink(5);
-  delay(2000);
-  blink(5);
+  myServo.write(90);
+  delay(1000);
+  myServo.write(0);
+  delay(5000);
 }
 
