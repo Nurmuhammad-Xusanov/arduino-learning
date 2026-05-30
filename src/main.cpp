@@ -3,17 +3,19 @@
 void setup() {
   pinMode(13, OUTPUT);
 }
-void blinkThreeTimes() {
-  for(int i = 0; i < 3; i++) {
+
+void blink(int times) {
+  for(int i = 0; i < times; i++) {
     digitalWrite(13, HIGH);
     delay(200);
     digitalWrite(13, LOW);
     delay(200);
   }
 }
+
 void loop() {
-  blinkThreeTimes();
+  blink(5);
   delay(2000);
-  blinkThreeTimes();
+  blink(5);
 }
 
