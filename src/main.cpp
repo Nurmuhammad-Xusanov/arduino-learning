@@ -1,17 +1,20 @@
 #include <Arduino.h>
+#include <Wire.h>
 
 void setup() {
+  Wire.begin();
   Serial.begin(9600);
+  Serial.println("Skanerlash boshlandi...");  
+
+  for(byte addr = 1; addr < 127; addr++) {
+    Wire.beginTransmission(addr);
+    if(Wire.endTransmission() == 0) {
+      Serial.print("topildi: 0x");
+      Serial.println(addr, HEX);
+    }
+  }
 }
 
 void loop() {
-  int data1 = analogRead(A0);
-  int data2 = analogRead(A1);
-  int data3 = analogRead(A2);
-  Serial.print(data1);
-  Serial.print("\t");
-  Serial.print(data2);
-  Serial.print("\t");
-  Serial.println(data3);
-  delay(10);
+
 }
