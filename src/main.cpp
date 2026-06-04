@@ -1,22 +1,43 @@
 #include <Arduino.h>
-#include <MD_Parola.h>
-#include <MD_MAX72xx.h>
-#include <SPI.h>
 
-#define HARDWARE_TYPE MD_MAX72XX::FC16_HW
-#define MAX_DEVICES 4
-#define CS_PIN 10
+// Interrupt ichida o'zgaruvchi o'zgaruvchilarga VOLATILE qo'shamiz
+volatile byte led = 5;
+volatile unsigned long lastRun = 0;
 
-MD_Parola matrix(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
+bool state = false;
+unsigned long oldTime = 0;
+const long interval = 1000;
+
+void color_swap() {
+    // Tugma shovqinini (Bouncing) dasturiy filtrlaymiz
+    if(millis() - lastRun > 200) { // 50ms juda kam, tugma siqilganda 200ms yaxshi ishlaydi
+        
+        digitalWrite(led, LOW); // Yangisiga o'tishdan oldin, hozirgi yonib turgan pinni o'chiramiz!
+        
+        led++;
+        if(led == 8) led = 5; // 5, 6, 7 pinlar aylanadi
+        
+        lastRun = millis();
+    }
+}
 
 void setup() {
-  matrix.begin();
-  matrix.setIntensity(5);
-  matrix.displayClear();
+    pinMode(5, OUTPUT);
+    pinMode(6, OUTPUT);
+    pinMode(7, OUTPUT);
+    
+    // 2-pinni ham INPUT (yoki sizda pull-up bo'lsa INPUT_PULLUP) qilish kerak
+    pinMode(2, INPUT_PULLUP); 
+    
+    attachInterrupt(digitalPinToInterrupt(2), color_swap, FALLING); // INPUT_PULLUP bo'lsa FALLING yaxshi
 }
 
 void loop() {
-    matrix.displayScroll("SPI ishlayabdi!", PA_LEFT, PA_SCROLL_LEFT, 100);
-    while(!matrix.displayAnimate()) {}
-    delay(500);
+    unsigned long newTime = millis();
+
+    if(newTime - oldTime >= interval) {
+        oldTime = newTime;
+        state = !state;
+        digitalWrite(led, state); // Faqat hozirgi tanlangan pin yonib-ochadi
+    }
 }
