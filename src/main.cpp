@@ -4,7 +4,7 @@
 #include <SPI.h>
 
 #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
-#define MAX_DEVICES 1
+#define MAX_DEVICES 4
 #define CS_PIN 10
 
 MD_Parola matrix(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
@@ -13,8 +13,10 @@ void setup() {
   matrix.begin();
   matrix.setIntensity(5);
   matrix.displayClear();
-  matrix.setTextAlignment(PA_CENTER);
-  matrix.print("Hi!");
 }
 
-void loop() {}
+void loop() {
+    matrix.displayScroll("SPI ishlayabdi!", PA_LEFT, PA_SCROLL_LEFT, 100);
+    while(!matrix.displayAnimate()) {}
+    delay(500);
+}
