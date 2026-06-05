@@ -1,18 +1,35 @@
 #include <Arduino.h>
 
+int ping(byte TriggerPin, byte EchoPin) {
+    long duration, distanceCm;
+
+    digitalWrite(TriggerPin, LOW);
+    delayMicroseconds(4);
+
+    digitalWrite(TriggerPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(TriggerPin, LOW);
+
+    duration = pulseIn(EchoPin, HIGH);
+
+    distanceCm = duration * 10 / 292 / 2;
+    
+    return distanceCm;
+}
 
 void setup() {
     Serial.begin(9600);
-    pinMode(13, OUTPUT);
+    pinMode(4, OUTPUT);
 }
 
 void loop() {
-    int ldr = analogRead(A0);
-    Serial.println(ldr);
-    if (ldr > 350) {
-        digitalWrite(13, HIGH);
+    if(ping(6,5) <= 10) {
+        Serial.println("Close");
+        digitalWrite(4, HIGH);
+        delay(500);
     } else {
-        digitalWrite(13, LOW);
+        Serial.println("Safe");
+        delay(500);
     }
-    delay(100);
+    digitalWrite(4, LOW);
 }
